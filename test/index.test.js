@@ -58,6 +58,22 @@ it('navigate dispatch action', () => {
   expect(state.params).toEqual([])
 })
 
+it('navigate dispatch action with replace', () => {
+  let path = '/test/'
+
+  let store = createStoreon([
+    router.createRouter()
+  ])
+
+  store.dispatch(router.routerNavigate, { path, replace: true })
+
+  let state = getRouterState(store)
+
+  expect(state.match).toBe(false)
+  expect(state.path).toBe(path)
+  expect(state.params).toEqual([])
+})
+
 it('match route', () => {
   let path = '/path-route/'
   let pathMatch = { page: 'home-route' }

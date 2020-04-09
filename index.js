@@ -8,12 +8,12 @@ let change = Symbol()
 /**
  * Changed event
  */
-let routerChanged = Symbol()
+let routerChanged = Symbol('router-changed')
 
 /**
  * Navigate event
  */
-let routerNavigate = Symbol()
+let routerNavigate = Symbol('router-navigate')
 
 /**
  * Router routerKey on store
@@ -30,9 +30,16 @@ function createRouter (routes = []) {
       store.dispatch(change, parse(loc.pathname, routes))
     })
 
-    store.on(routerNavigate, (state, path) => {
+    store.on(routerNavigate, (state, target) => {
+      let { path, replace } =
+        (typeof target === 'string') ? { path: target, replace: false } : target
+
       if (state[routerKey].path !== path) {
-        history.pushState(null, null, path)
+        if (replace) {
+          history.replaceState(null, '', path)
+        } else {
+          history.pushState(null, '', path)
+        }
       }
 
       store.dispatch(change, parse(path, routes))
